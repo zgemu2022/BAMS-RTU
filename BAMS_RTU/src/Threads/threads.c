@@ -35,7 +35,7 @@ static int doRecvFunTasks(int portid)
 	int lencomm = 255, lentemp1, lentemp2, lenframe;
 	unsigned short crcval;
 	unsigned char b1, b2;
-	int bmsid = portid + 1;
+	int bmsid = portid;
 	unsigned short regAddr;
 	lentemp1 = ReadComPort(portid, commbuf, lencomm);
 
@@ -80,7 +80,7 @@ static int doRecvFunTasks(int portid)
 	if (b1 != commbuf[lenframe - 2] || b2 != commbuf[lenframe - 1])
 		return 250;
 
-	printf("6收到正确包，包长度长度 = %d \n", lentemp1);
+	printf("6收到正确包，包长度长度 = %d bmsid=%d \n", lentemp1,portid);
 
 	if (commbuf[1] != 0x10) //本程序暂时不处理其他功能码，以非法功能直接返回
 	{
@@ -115,11 +115,11 @@ void *serial_thread(void *arg)
 	int taskid;
 	int ret;
 
-	printf("111端口号 =%d \"n", portid);
+	printf("serial_thread 111端口号 =%d \"n", portid);
 	Uart_Init(portid, pParaBams->baud[portid]);
 	while (1)
 	{
-		printf("准备接收数据！！！！\n");
+		printf("BAMS准备接收数据！！！！\n");
 		ret = doRecvFunTasks(portid);
 		if (ret != 0)
 			usleep(100000); //延时100ms

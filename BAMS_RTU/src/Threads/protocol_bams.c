@@ -42,6 +42,7 @@ static void outputdata(unsigned char bamsid, unsigned char type, int pcsid, int 
 		{
 		case _ALL_:
 		{
+			printf("发送订阅全部数据到相应模块\n");
 			myprintbuf(bmsdata[bamsid][pcsid].lendata, (unsigned char *)&bmsdata[bamsid][pcsid].buf_data);
 			pnote->pfun(pcsid, type, (void *)&bmsdata[bamsid][pcsid]);
 		}
@@ -49,6 +50,7 @@ static void outputdata(unsigned char bamsid, unsigned char type, int pcsid, int 
 		break;
 		case _SOC_:
 		{
+			printf("发送订阅SOC数据到相应模块\n");
 			short soc = bmsdata[bamsid][pcsid].buf_data[14] * 256 + bmsdata[bamsid][pcsid - 1].buf_data[15];
 			pnote->pfun(pcsid, type, (void *)&soc);
 		}
@@ -82,7 +84,7 @@ int AnalysFun10(int bamsid, unsigned short RegAddr, unsigned char *pbuf)
 		memcpy((char *)&bmsdata[bamsid][pcsid].buf_data, (char *)&pbuf[3], num_val * 2);
 		myprintbuf(num_val * 2, (unsigned char *)&bmsdata[bamsid][pcsid].buf_data);
 		outputdata(bamsid, _ALL_, pcsid, num_val);
-		outputdata(bamsid, _SOC_, pcsid, num_val);
+	//	outputdata(bamsid, _SOC_, pcsid, num_val);
 	}
 	// else
 	// 	printf("比较后相同，不发送 pcsid=%d\n",pcsid);
