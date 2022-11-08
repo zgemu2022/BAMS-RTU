@@ -8,16 +8,19 @@
 
 int bams_main(void *para)
 {
-	printf("123456bams_main初始化\n");
+	printf("bams_main初始化\n");
 	CreateThreads(para);
 	// while (1)
 	// {
 	// }
+	//sleep(1);
+	return 0;
 }
 
 int SubscribeBamsData(unsigned char type, outData2Other pfun) //订阅Bams数据
 {
-	printf("正在订阅BAMS数据 type=%d！！！！！\n", type);
+	static int xx=0;
+	printf("正在订阅BAMS数据 type=%d！！！！！xx=%d\n", type,xx++);
 	post_list_t *note = (post_list_t *)malloc(sizeof(post_list_t));
 	note->type = type;
 

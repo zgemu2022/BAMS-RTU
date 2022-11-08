@@ -39,8 +39,11 @@ static int doRecvFunTasks(int portid)
 	unsigned short regAddr;
 	lentemp1 = ReadComPort(portid, commbuf, lencomm);
 
-	// printf("1收到的字符串长度 = %d \n", lentemp1);
+	if(lentemp1==-1)
+		return 255;
 
+	printf("1 端口portid=%d 收到的字符串长度 = %d \n",portid, lentemp1);
+    
 	myprintbuf(lentemp1, commbuf);
 	if (lentemp1 < 2)
 		return 255;

@@ -67,11 +67,11 @@ int OpenComPort (int ComPort, int baudrate, int databit,
     switch (ComPort) {
     case 0:
 //        pComPort = "/dev/ttyS6";//"/dev/ttyS2";   //"/dev/ttyS2"
-        pComPort = "/dev/tts8";//"/dev/ttyS2";   //"/dev/ttyS2"
+        pComPort = "/dev/tts7";//"/dev/ttyS2";   //"/dev/ttyS2"
         break;
     case 1:
        //  pComPort = "/dev/ttyS3";//"/dev/ttyS2";   //"/dev/ttyS2"
-        pComPort = "/dev/tts7";
+        pComPort = "/dev/tts8";
         break;
     case 2:
 //        pComPort = "/dev/ttyS6";//"/dev/ttyS2";   //"/dev/ttyS2"
