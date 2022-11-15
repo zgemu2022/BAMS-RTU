@@ -70,10 +70,36 @@ int AnalysFun10(int bamsid, unsigned short RegAddr, unsigned char *pbuf)
 	// poi.portID = 5;
 	int pcsid;
 	int num_val;
+
+	static int pcsid_last[] = {0, 0};
+	static int flag_first[] = {1, 1};
+	static int rev_num[] = {0, 0};
+
 	pcsid = RegAddr / 16;
 	num_val = pbuf[0] * 256 + pbuf[1];
 
 	printf("解析得到本次传输的数据个数=%d pcs编号=%d 数据包长度=%d %d  bamsid=%d\n", num_val, pcsid, num_val, pbuf[2], bamsid);
+	rev_num[bamsid]++;
+	if (flag_first[bamsid] == 1)
+	{
+		flag_first[bamsid] = 0;
+		pcsid_last[bamsid] = pcsid;
+	}
+	else
+	{
+		if (pcsid_last[bamsid] != pcsid)
+		{
+			printf("000BAMS模块bamsid=%d 总共收到pcsid=%d 的数据包%d个\n", bamsid, pcsid_last[bamsid], rev_num[bamsid]);
+			rev_num[bamsid] = 0;
+			pcsid_last[bamsid] = pcsid;
+		}
+		else
+		{
+
+			printf("BAMS模块重复发送的包bamsid=%d 总共收到pcsid=%d 的数据包%d个\n", bamsid, pcsid_last[bamsid], rev_num[bamsid]);
+			return 1;
+		}
+	}
 
 	// if (memcmp((unsigned char *)&pbuf[3], (unsigned char *)&bmsdata[bamsid][pcsid].buf_data, num_val * 2) != 0)
 	{
@@ -84,7 +110,7 @@ int AnalysFun10(int bamsid, unsigned short RegAddr, unsigned char *pbuf)
 		memcpy((char *)&bmsdata[bamsid][pcsid].buf_data, (char *)&pbuf[3], num_val * 2);
 		myprintbuf(num_val * 2, (unsigned char *)&bmsdata[bamsid][pcsid].buf_data);
 		outputdata(bamsid, _ALL_, pcsid, num_val);
-	//	outputdata(bamsid, _SOC_, pcsid, num_val);
+		//	outputdata(bamsid, _SOC_, pcsid, num_val);
 	}
 	// else
 	// 	printf("比较后相同，不发送 pcsid=%d\n",pcsid);

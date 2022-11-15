@@ -39,7 +39,7 @@ all:$(OBJS) libbams_rtu.so
 	-cp libbams_rtu.so  /mnt/hgfs/Tcu_lib/libbams_rtu.so;
 libbams_rtu.so: $(OBJS)
 	@echo "54321 xxxxx"
-	$(LINKER)   $(LIB_DIR) -fmessage-length=0 -shared $^ -lDllCommon -lpthread -lrt -ldl -o $@ 
+	$(LINKER)   $(LIB_DIR) -fmessage-length=0 -shared $^ -lDllCommon -lpthread -lrt -ldl -lm -o $@ 
 define MAKE_C
 
 $(eval OBJ = $(addprefix $(1)/,$(patsubst %.c,%.o,$(notdir $(2)))))
