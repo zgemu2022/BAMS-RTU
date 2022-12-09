@@ -19,8 +19,7 @@ int bams_main(void *para)
 
 int SubscribeBamsData(unsigned char type, outData2Other pfun) //订阅Bams数据
 {
-	static int xx=0;
-	printf("正在订阅BAMS数据 type=%d！！！！！xx=%d\n", type,xx++);
+	printf("正在订阅BAMS数据 type=%d！！！！！\n", type);
 	post_list_t *note = (post_list_t *)malloc(sizeof(post_list_t));
 	note->type = type;
 

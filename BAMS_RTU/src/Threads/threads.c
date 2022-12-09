@@ -32,25 +32,29 @@ void Uart_Init(unsigned char portid, unsigned int baud)
 static int doRecvFunTasks(int portid)
 {
 	unsigned char commbuf[256];
-	int lencomm = 255, lentemp1, lentemp2, lenframe;
+	int lencomm = 39, lentemp1, lentemp2, lenframe;
 	unsigned short crcval;
 	unsigned char b1, b2;
 	int bmsid = portid;
 	unsigned short regAddr;
+	
 	lentemp1 = ReadComPort(portid, commbuf, lencomm);
 
-	if(lentemp1==-1)
+	if(lentemp1==0)
 		return 255;
+
+	if(lentemp1==-1)
+		return 254;
 
 	printf("1 端口portid=%d 收到的字符串长度 = %d \n",portid, lentemp1);
     
-	myprintbuf(lentemp1, commbuf);
-	if (lentemp1 < 2)
-		return 255;
+	myprintbuf(lentemp1, commbuf,1);
+	if (lentemp1 < 39)
+		return 253;
 
 	if (commbuf[1] != 0x10 && commbuf[1] != 0x04 && commbuf[1] != 0x03 && commbuf[1] != 0x06)
 	{
-		return 254;
+		return 252;
 	}
 	printf("2收到的字符串长度 = %d \n", lentemp1);
 
@@ -60,7 +64,7 @@ static int doRecvFunTasks(int portid)
 		printf("3.1计算字符串长度 = %d %d\n", lentemp2, commbuf[6]);
 
 		if (lentemp2 != commbuf[6])
-			return 252;
+			return 251;
 		lenframe = lentemp2 + 9;
 		printf("4收到的字符串长度 = %d %d\n", lentemp1, lenframe);
 
@@ -122,10 +126,15 @@ void *serial_thread(void *arg)
 	Uart_Init(portid, pParaBams->baud[portid]);
 	while (1)
 	{
-		printf("BAMS准备接收数据！！！！\n");
+		//printf("BAMS准备接收数据！！！！\n");
 		ret = doRecvFunTasks(portid);
 		if (ret != 0)
-			usleep(100000); //延时100ms
+		{
+			if(ret!=255)
+			   printf("BAMS模块未能接收到正确数据 ret = %d\n",ret);
+			usleep(10000); //延时10ms
+		}
+
 	}
 }
 
@@ -135,6 +144,7 @@ void CreateThreads(void *para)
 	pthread_attr_t Thread_attr;
 	int i;
 	memcpy((void *)pParaBams, (PARA_BAMS *)para, sizeof(PARA_BAMS));
+	memset((void*)&bmsdata,0,sizeof(bmsdata));
 	for (i = 0; i < pParaBams->portnum; i++)
 	{
 		if (FAIL == CreateSettingThread(&ThreadID, &Thread_attr, (void *)serial_thread, (int *)i, 1, 1))

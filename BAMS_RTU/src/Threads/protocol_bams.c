@@ -6,10 +6,13 @@
 post_list_t *post_list_bms = NULL;
 // unsigned char val[10][255] = {0};
 BmsData bmsdata[2][18];
-int myprintbuf(int len, unsigned char *buf)
+int myprintbuf(int len, unsigned char *buf,int flag)
 {
 	int i = 0;
-	printf("\nbuflen=%d\n", len);
+	if(flag==1)
+		printf("\nbams buflen=%d\n", len);
+	else
+	    printf("\nbuflen=%d\n", len);
 	for (i = 0; i < len; i++)
 		printf("0x%x ", buf[i]);
 	printf("\n");
@@ -42,8 +45,8 @@ static void outputdata(unsigned char bamsid, unsigned char type, int pcsid, int 
 		{
 		case _ALL_:
 		{
-			printf("发送订阅全部数据到相应模块\n");
-			myprintbuf(bmsdata[bamsid][pcsid].lendata, (unsigned char *)&bmsdata[bamsid][pcsid].buf_data);
+			printf("发送订阅全部数据到相应模块 bamsid=%d  pcsid=%d\n",bamsid,  pcsid);
+			myprintbuf(bmsdata[bamsid][pcsid].lendata, (unsigned char *)&bmsdata[bamsid][pcsid].buf_data,0);
 			pnote->pfun(pcsid, type, (void *)&bmsdata[bamsid][pcsid]);
 		}
 
@@ -104,11 +107,11 @@ int AnalysFun10(int bamsid, unsigned short RegAddr, unsigned char *pbuf)
 	// if (memcmp((unsigned char *)&pbuf[3], (unsigned char *)&bmsdata[bamsid][pcsid].buf_data, num_val * 2) != 0)
 	{
 		printf("比较后不同，保存并发送 pcsid=%d bamsid=%d\n", pcsid, bamsid);
-		bmsdata[bamsid][pcsid].pcsid = pcsid;
+		bmsdata[bamsid][pcsid].pcsid_bms = pcsid;
 		bmsdata[bamsid][pcsid].bmsid = bamsid;
 		bmsdata[bamsid][pcsid].lendata = num_val * 2;
 		memcpy((char *)&bmsdata[bamsid][pcsid].buf_data, (char *)&pbuf[3], num_val * 2);
-		myprintbuf(num_val * 2, (unsigned char *)&bmsdata[bamsid][pcsid].buf_data);
+		myprintbuf(num_val * 2, (unsigned char *)&bmsdata[bamsid][pcsid].buf_data,0);
 		outputdata(bamsid, _ALL_, pcsid, num_val);
 		//	outputdata(bamsid, _SOC_, pcsid, num_val);
 	}
