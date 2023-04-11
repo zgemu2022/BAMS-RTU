@@ -18,9 +18,9 @@ PARA_BAMS *pParaBams = &ParaBams;
 void Uart_Init(unsigned char portid, unsigned int baud)
 {
 	int ret;
-
+	
 	printf("正在试图打开串口%d   波特率=%d！！！！！\n", portid, baud);
-	ret = OpenComPort(portid, baud, 8, "1", 'N');
+	ret = OpenComPort(portid , baud, 8, "1", 'N');
 	if (ret == -1)
 		printf("串口%d打开失败！！！！！\n", portid);
 	else
@@ -32,22 +32,21 @@ void Uart_Init(unsigned char portid, unsigned int baud)
 static int doRecvFunTasks(int portid)
 {
 	unsigned char commbuf[256];
-	int lencomm = 39, lentemp1, lentemp2, lenframe;
+	int lencomm=0, lentemp1, lentemp2, lenframe;
 	unsigned short crcval;
 	unsigned char b1, b2;
 	int bmsid = portid;
 	unsigned short regAddr;
-	
-	lentemp1 = ReadComPort(portid, commbuf, lencomm);
-
+	memset(commbuf,0,sizeof(commbuf));
+	lentemp1 = ReadComPort(portid, &commbuf, lencomm);
 	if(lentemp1==0)
 		return 255;
 
 	if(lentemp1==-1)
 		return 254;
 
-	printf("1 端口portid=%d 收到的字符串长度 = %d \n",portid, lentemp1);
-    
+	printf("%d 端口portid=%d 收到的字符串长度 = %d \n", portid+1,portid, lentemp1);
+
 	myprintbuf(lentemp1, commbuf,1);
 	if (lentemp1 < 39)
 		return 253;
