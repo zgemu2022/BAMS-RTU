@@ -19,10 +19,9 @@ typedef struct
 	unsigned char pcsid_bms;
 	unsigned char lendata;		 //收到的数据长度
 	unsigned char buf_data[256]; //收到的数据部分
-
 } BmsData;
 extern post_list_t *post_list_bms;
 extern BmsData bmsdata[2][18];
 int myprintbuf(int len, unsigned char *buf,int flag);
-int AnalysFun10(int bamsid, unsigned short RegAddr, unsigned char *pbuf);
+int AnalysFun10(int bamsid, unsigned short RegAddr, unsigned char *pbuf,int pcsNum);
 #endif
