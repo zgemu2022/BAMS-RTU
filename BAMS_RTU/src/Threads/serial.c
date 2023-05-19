@@ -118,37 +118,37 @@ int getPortFd(unsigned char comid){
     return fd[comid];
 }
 
-int ReadComPort(unsigned char comid, void *data, int datalength)
-{
-    int retval = 0;
+// int ReadComPort(unsigned char comid, void *data, int datalength)
+// {
+//     int retval = 0;
 
-    FD_ZERO(&fs_read);
-    FD_SET(fd[comid], &fs_read);
-    tv_timeout.tv_sec = 0;       // TIMEOUT_SEC (datalength, get_baudrate ());
-    tv_timeout.tv_usec = 500000; // TIMEOUT_USEC;
-    // printf("读取文件句柄   fd[%d] = %d\n",comid,fd[comid]);
+//     FD_ZERO(&fs_read);
+//     FD_SET(fd[comid], &fs_read);
+//     tv_timeout.tv_sec = 0;       // TIMEOUT_SEC (datalength, get_baudrate ());
+//     tv_timeout.tv_usec = 300000; // TIMEOUT_USEC;
+//     // printf("读取文件句柄   fd[%d] = %d\n",comid,fd[comid]);
     
 
-    retval = select(fd[comid] + 1, &fs_read, NULL, NULL, &tv_timeout);
-    if (retval > 0)
-    {
-        retval = read(fd[comid], data, datalength);
-        // printf("用文件句柄   fd[%d] = %d \n",comid,fd[comid]);
-        return (retval);
-    }
-    else
-    {
+//     retval = select(fd[comid] + 1, &fs_read, NULL, NULL, &tv_timeout);
+//     if (retval > 0)
+//     {
+//         retval = read(fd[comid], data, datalength);
+//         // printf("用文件句柄   fd[%d] = %d \n",comid,fd[comid]);
+//         return (retval);
+//     }
+//     else
+//     {
 
-        if (0 == retval)
-        {
-            return (0);
-        }
-        else
-        {
-            return (-1);
-        }
-    }
-}
+//         if (0 == retval)
+//         {
+//             return (0);
+//         }
+//         else
+//         {
+//             return (-1);
+//         }
+//     }
+// }
 
 // int printf_test(char data[],int len,int page_num){
 //     int i;
@@ -167,7 +167,7 @@ int ReadComPort(unsigned char comid, void *data, int datalength)
 // int ReadComPort (unsigned char comid,void *data, int datalength)
 // {
 //     int retval = 0, retval1 = 0, retval2 = 0;
-//     char save_data1[256], save_data2[256];
+//     unsigned char save_data1[datalength], save_data2[datalength];
 //     memset(save_data1, 0, sizeof(save_data1));
 //     memset(save_data2, 0, sizeof(save_data2));
 //     int i, page2_len;
@@ -183,7 +183,7 @@ int ReadComPort(unsigned char comid, void *data, int datalength)
 //         memcpy(&save_data2, &save_data1, retval1);
 //         memset(save_data1, 0, sizeof(save_data1));
 //         page2_len = save_data2[6]+2;
-
+//         // if()
 //         retval2 = read(fd[comid], save_data1, page2_len);
 //         // printf_test(save_data1, retval2, 2);
 //         memcpy(&save_data2[7], save_data1, retval2);
@@ -204,7 +204,7 @@ int ReadComPort(unsigned char comid, void *data, int datalength)
 // int ReadComPort (unsigned char comid,void *data, int datalength)
 // {
 //     int retval = 0, retval1 = 0, retval2 = 0;
-//     char save_data[256];
+//     unsigned char save_data[256];
 //     memset(save_data, 0, sizeof(save_data));
 //     int i, page2_len;
 //     FD_ZERO(&fs_read);
@@ -229,6 +229,51 @@ int ReadComPort(unsigned char comid, void *data, int datalength)
 //         }
 //     }
 // }
+
+int ReadComPort (unsigned char comid,void *data, int datalength)
+{
+    int retval = 0, retval1 = 0, retval2 = 0;
+    int i;
+    unsigned char page2_len;
+    FD_ZERO(&fs_read);
+    FD_SET (fd[comid], &fs_read);
+    tv_timeout.tv_sec =0;// TIMEOUT_SEC (datalength, get_baudrate ());
+
+    tv_timeout.tv_usec = 100000;//TIMEOUT_USEC;
+    //printf("读取文件句柄   fd[%d] = %d\n",comid,fd[comid]);
+    retval = select (fd[comid] + 1, &fs_read, NULL, NULL, &tv_timeout);
+    if (retval > 0) {
+        retval1 = read(fd[comid], data, 7);
+        page2_len = *(unsigned char *)&data[6];
+        if((retval1+page2_len+2)>255){
+            return 0;
+        }
+        // printf("page2_len:%d  retval1:%d \n",page2_len,retval1);
+    }
+    else {
+        if (0 == retval ) {
+            return (0);
+        }else{
+            return (-1);
+        }
+    }
+
+    tv_timeout.tv_usec = 300000;//TIMEOUT_USEC;
+    retval = select (fd[comid] + 1, &fs_read, NULL, NULL, &tv_timeout);
+    if (retval > 0) {
+        retval2 = read(fd[comid], &data[7], page2_len+2);
+        // printf("retval2：%d \n",retval2);
+        datalength = retval1 + retval2;
+        return (datalength);
+    }
+    else {
+        if (0 == retval ) {
+            return (0);
+        }else{
+            return (-1);
+        }
+    }
+}
 
 
 /* 

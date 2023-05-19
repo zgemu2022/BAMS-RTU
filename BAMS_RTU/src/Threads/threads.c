@@ -33,7 +33,7 @@ static int doRecvFunTasks(int portid)
 {
 	printf("bams 正在接收信息\n");
 	unsigned char commbuf[500];//[256];
-	int lencomm=255,lentemp1, lentemp2, lenframe;
+	int lencomm=233,lentemp1, lentemp2, lenframe;
 	unsigned short crcval;
 	unsigned char b1, b2;
 	// int bmsid = portid;
