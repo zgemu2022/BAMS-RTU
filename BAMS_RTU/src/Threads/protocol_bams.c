@@ -26,7 +26,7 @@ int printbuf_msg(int len, unsigned char *buf, int pcsid,int bamsid)
 	// memcmp(buf, pcs_buf,sizeof(buf));
 	int pcsid_z;
 	if (bamsid == 1){
-		pcsid_z = pcsid + 16;
+		pcsid_z = pcsid + 14;
 	}
 	else {
 		pcsid_z = pcsid;
@@ -98,8 +98,8 @@ static void outputdata(unsigned char bamsid, unsigned char type, int pcsid, int 
 		case _ALL_:
 		{
 			printf("发送订阅全部数据到相应模块 bamsid=%d  pcsid=%d\n",bamsid,  pcsid);
-			myprintbuf(bmsdata[bamsid][pcsid].lendata, (unsigned char *)&bmsdata[bamsid][pcsid].buf_data,0);
-			printbuf_msg(bmsdata[bamsid][pcsid].lendata, (unsigned char *)&bmsdata[bamsid][pcsid].buf_data,pcsid, bamsid);
+			// myprintbuf(bmsdata[bamsid][pcsid].lendata, (unsigned char *)&bmsdata[bamsid][pcsid].buf_data,0);
+			// printbuf_msg(bmsdata[bamsid][pcsid].lendata, (unsigned char *)&bmsdata[bamsid][pcsid].buf_data,pcsid, bamsid);
 			pnote->pfun(pcsid, type, (void *)&bmsdata[bamsid][pcsid]);
 		}
 
@@ -130,8 +130,8 @@ int AnalysFun10(int bamsid, unsigned short RegAddr, unsigned char *pbuf,int pcsN
 	int i;
 	num_val = 16;
 
-	static int pcsid_last[] = {0, 0};
-	static int flag_first[] = {1, 1};
+	// static int pcsid_last[] = {0, 0};
+	// static int flag_first[] = {1, 1};
 	static int rev_num[] = {0, 0};
 
 	pcsid = RegAddr / 16;
@@ -143,7 +143,7 @@ int AnalysFun10(int bamsid, unsigned short RegAddr, unsigned char *pbuf,int pcsN
 
 	rev_num[bamsid]++;
 
-	printf("解析得到本次传输的数据个数=%d 数据包长度=%d %d  bamsid=%d\n", num_val, num_val, pbuf[2], bamsid);
+	// printf(" 解析得到本次传输的数据个数=%d 数据包长度=%d %d  bamsid=%d\n", num_val, num_val, pbuf[2], bamsid);
 	// if (flag_first[bamsid] == 1)
 	// {
 	// 	flag_first[bamsid] = 0;
@@ -169,12 +169,13 @@ int AnalysFun10(int bamsid, unsigned short RegAddr, unsigned char *pbuf,int pcsN
 	{
 		for (i = 0; i < pcsNum; i++)
 		{
-			printf("比较后不同，保存并发送 pcsid=%d bamsid=%d\n", pcsid, bamsid);
+			printf("bams模块 比较后不同，保存并发送 pcsid=%d bamsid=%d\n", pcsid, bamsid);
 			bmsdata[bamsid][pcsid].pcsid_bms = pcsid;
 			bmsdata[bamsid][pcsid].bmsid = bamsid;
 			bmsdata[bamsid][pcsid].lendata = num_val * 2;
 			memcpy((char *)&bmsdata[bamsid][pcsid].buf_data, (char *)&pbuf[3 + i * 32], num_val * 2);
 			myprintbuf(num_val * 2, (unsigned char *)&bmsdata[bamsid][pcsid].buf_data, 0);
+			printbuf_msg(bmsdata[bamsid][pcsid].lendata, (unsigned char *)&bmsdata[bamsid][pcsid].buf_data,pcsid, bamsid);
 			outputdata(bamsid, _ALL_, pcsid, num_val);
 			pcsid++;
 		}

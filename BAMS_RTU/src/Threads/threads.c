@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <string.h>
+#include <stdlib.h>
 #include "serial.h"
 #include "bams_main.h"
 #include "protocol_bams.h"
@@ -38,7 +39,7 @@ static int doRecvFunTasks(int portid)
 	unsigned char b1, b2;
 	// int bmsid = portid;
 	unsigned short regAddr;
-	int i,pcsNum;
+	int pcsNum;
 	memset(commbuf,0,sizeof(commbuf));
 	lentemp1 = ReadComPort(portid, &commbuf, lencomm);
 
@@ -112,7 +113,8 @@ static int doRecvFunTasks(int portid)
 	}
 
 	regAddr = commbuf[2] * 256 + commbuf[3];
-	AnalysFun10(portid, regAddr, (unsigned short *)&commbuf[4],pcsNum);
+	// AnalysFun10(portid, regAddr, (unsigned short *)&commbuf[4],pcsNum);
+	AnalysFun10(portid, regAddr, &commbuf[4],pcsNum);
 	
 
 	crcval = crc16_check(commbuf, 6);
@@ -123,6 +125,7 @@ static int doRecvFunTasks(int portid)
 	int aa = WriteComPort(portid, commbuf, 8);
 	printf("回复给bams的报文:  ");
 	myprintbuf(aa, commbuf,1);
+	
 	return 0;
 	// if (lentemp1 < 39)
 	// 		return 253;
@@ -194,7 +197,7 @@ void *serial_thread(void *arg)
 {
 
 	int portid = (int)arg;
-	int taskid;
+	// int taskid;
 	int ret;
 
 	printf("serial_thread 111端口号 =%d \"n", portid);

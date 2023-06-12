@@ -150,19 +150,19 @@ int getPortFd(unsigned char comid){
 //     }
 // }
 
-// int printf_test(char data[],int len,int page_num){
-//     int i;
-//     if (page_num == 3)
-//     {
-//         printf("这是总包  数据长度%d 内容:",len);
-//     }else{
-//         printf("这是第%d包  数据长度%d 内容:", page_num, len);
-//     }   
-//     for(i=0;i<len;i++){
-//         printf("%#x ", data[i]);
-//     }
-//     printf("\n");
-// }
+int printf_test(unsigned char data[],int len,int page_num){
+    int i;
+    if (page_num == 3)
+    {
+        printf("这是总包  数据长度%d 内容:",len);
+    }else{
+        printf("这是第%d包  数据长度%d 内容:", page_num, len);
+    }   
+    for(i=0;i<len;i++){
+        printf("%#x ", data[i]);
+    }
+    printf("\n");
+}
 
 // int ReadComPort (unsigned char comid,void *data, int datalength)
 // {
@@ -230,6 +230,7 @@ int getPortFd(unsigned char comid){
 //     }
 // }
 
+
 int ReadComPort (unsigned char comid,void *data, int datalength)
 {
     int retval = 0, retval1 = 0, retval2 = 0;
@@ -274,6 +275,52 @@ int ReadComPort (unsigned char comid,void *data, int datalength)
         }
     }
 }
+
+// int ReadComPort (unsigned char comid,void *data, int datalength)
+// {
+//     int retval = 0, retval1 = 0, retval2 = 0;
+//     unsigned char page2_len=0;
+//     FD_ZERO(&fs_read);
+//     FD_SET (fd[comid], &fs_read);
+//     tv_timeout.tv_sec =0;// TIMEOUT_SEC (datalength, get_baudrate ());
+
+//     tv_timeout.tv_usec = 150000;//TIMEOUT_USEC;
+//     //printf("读取文件句柄   fd[%d] = %d\n",comid,fd[comid]);
+//     retval = select (fd[comid] + 1, &fs_read, NULL, NULL, &tv_timeout);
+//     if (retval > 0) {
+//         retval1 = read(fd[comid], data, 7);
+//         page2_len = ((unsigned char *)data)[6];
+//         printf_test((unsigned char *)data,retval1,1);
+//         printf("page2_len:%d  retval1:%d \n",page2_len,retval1);
+//         if((retval1+page2_len+2)>255 && (retval1+page2_len+2)< 150){
+//             return 0;
+//         }
+//         // printf("page2_len:%d  retval1:%d \n",page2_len,retval1);
+//     }
+//     else {
+//         if (0 == retval ) {
+//             return (0);
+//         }else{
+//             return (-1);
+//         }
+//     }
+
+//     tv_timeout.tv_usec = 300000;//TIMEOUT_USEC;
+//     retval = select (fd[comid] + 1, &fs_read, NULL, NULL, &tv_timeout);
+//     if (retval > 0) {
+//         retval2 = read(fd[comid], &((unsigned char *)data)[7], page2_len+2);
+//         printf("retval2：%d \n",retval2);
+//         datalength = retval1 + retval2;
+//         return (datalength);
+//     }
+//     else {
+//         if (0 == retval ) {
+//             return (0);
+//         }else{
+//             return (-1);
+//         }
+//     }
+// }
 
 
 /* 
