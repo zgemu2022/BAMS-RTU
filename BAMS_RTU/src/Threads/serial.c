@@ -292,7 +292,7 @@ int ReadComPort (unsigned char comid,void *data, int datalength)
         page2_len = ((unsigned char *)data)[6];
         // printf_test((unsigned char *)data,retval1,1);
         // printf("page2_len:%d  retval1:%d \n",page2_len,retval1);
-        if((retval1+page2_len+2)>255 || (retval1+page2_len+2)!=233){
+        if((retval1+page2_len+2)>255){
             return 0;
         }
         // printf("page2_len:%d  retval1:%d \n",page2_len,retval1);

@@ -26,7 +26,7 @@ int printbuf_msg(int len, unsigned char *buf, int pcsid,int bamsid)
 	// memcmp(buf, pcs_buf,sizeof(buf));
 	int pcsid_z;
 	if (bamsid == 1){
-		pcsid_z = pcsid + 14;
+		pcsid_z = pcsid + ;
 	}
 	else {
 		pcsid_z = pcsid;
@@ -167,6 +167,22 @@ int AnalysFun10(int bamsid, unsigned short RegAddr, unsigned char *pbuf,int pcsN
 
 	// if (memcmp((unsigned char *)&pbuf[3], (unsigned char *)&bmsdata[bamsid][pcsid].buf_data, num_val * 2) != 0)
 	{
+		// if(RegAddr == 0x00e0){
+		// 		// pcsid =14;
+		// 		if(pcsid == 14){
+		// 			printf("bams模块 比较后不同，保存并发送 pcsid=%d bamsid=%d\n", pcsid, bamsid);
+		// 			bmsdata[bamsid][pcsid].pcsid_bms = pcsid;
+		// 			bmsdata[bamsid][pcsid].bmsid = bamsid;
+		// 			bmsdata[bamsid][pcsid].lendata = num_val * 2;
+		// 			memcpy((char *)&bmsdata[bamsid][pcsid].buf_data, (char *)&pbuf[3 + i * 32], num_val * 2);
+		// 			myprintbuf(num_val * 2, (unsigned char *)&bmsdata[bamsid][pcsid].buf_data, 0);
+		// 			printbuf_msg(bmsdata[bamsid][pcsid].lendata, (unsigned char *)&bmsdata[bamsid][pcsid].buf_data,pcsid, bamsid);
+		// 			outputdata(bamsid, _ALL_, pcsid, num_val);
+		// 			return 0;
+		// 		// pcsid++;
+		// 		}
+				
+		// }
 		for (i = 0; i < pcsNum; i++)
 		{
 			printf("bams模块 比较后不同，保存并发送 pcsid=%d bamsid=%d\n", pcsid, bamsid);
@@ -179,8 +195,9 @@ int AnalysFun10(int bamsid, unsigned short RegAddr, unsigned char *pbuf,int pcsN
 			outputdata(bamsid, _ALL_, pcsid, num_val);
 			pcsid++;
 		}
+		
 		//	outputdata(bamsid, _SOC_, pcsid, num_val);
-		}
+	}
 	// else
 	// 	printf("比较后相同，不发送 pcsid=%d\n",pcsid);
 	return 0;
